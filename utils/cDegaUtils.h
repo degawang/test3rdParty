@@ -3,11 +3,20 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#define GLEW_STATIC
+#include <GL/glew.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include <stb_image_aug.h>
 #include <degaFormat.h>
 #include <degaPredefine.h>
 #include <cDegaException.h>
+
+#ifdef DEGA_PLATFORM_WINDOW
+#include <windows.h>  
+#include <commdlg.h>
+#elif define(DEGA_PLATFORM_LINUX)
+
+#endif
 
 namespace degawong {
 
@@ -46,16 +55,56 @@ public:
 		data = nullptr;
 		stbLoadImage();
 	}
-	virtual ~cImageUtils() {};
+	virtual ~cImageUtils() { stbi_image_free(data); };
 public:
 	void loadImage(std::string _path2Image) {
+		stbi_image_free(data);
 		path2Image = _path2Image;
 		stbLoadImage();
 	}
+	void save2File(std::string _path2Image) {
+		stbi_write_bmp(_path2Image.c_str(), imageInfo.width, imageInfo.height, imageInfo.channel, data);
+	}
+	GLenum checkImageFormat() {
+		switch (imageInfo.channel) {
+		case 1: { return (inputColorFormat = GL_LUMINANCE); }
+		case 3: { return (inputColorFormat = GL_RGB); }
+		case 4: { return (inputColorFormat = GL_RGBA); }
+		default: { return (inputColorFormat = GL_RGB); }
+		}
+	}
+public:
+	void getOpenFilenName() {
+		initWindowFrame();
+#ifdef DEGA_PLATFORM_WINDOW
+		if (GetOpenFileName(&windowFrame)) { path2Image = windowFrame.lpstrFile; }		
+#elif define(DEGA_PLATFORM_LINUX)
+
+#endif
+		//OutputDebugString(selectFileName);
+		//OutputDebugString((LPCSTR)"\r\n");
+		//std::cout << selectFileName << std::endl;
+	}
+	void getSaveFilenName() {
+		initWindowFrame();
+#ifdef DEGA_PLATFORM_WINDOW
+		if (GetSaveFileName(&windowFrame)) { path2Image = windowFrame.lpstrFile; }
+#elif define(DEGA_PLATFORM_LINUX)
+
+#endif
+	}
 public:
 	unsigned char* data;
-	cImageInfo imageInfo;
-	std::string path2Image;
+	cImageInfo imageInfo;	
+	std::string path2Image;	
+	GLenum inputColorFormat;
+	TCHAR selectFileName[MAX_PATH];
+public:
+#ifdef DEGA_PLATFORM_WINDOW
+	OPENFILENAME windowFrame;
+#elif define(DEGA_PLATFORM_LINUX)
+
+#endif
 private:
 	void stbLoadImage() {
 		try {
@@ -65,6 +114,26 @@ private:
 			std::cerr << exce.what() << std::endl;
 			throw;
 		}
+	}
+private:
+	void initWindowFrame() {
+#ifdef DEGA_PLATFORM_WINDOW
+		ZeroMemory(&windowFrame, sizeof(OPENFILENAME));
+		windowFrame.lStructSize = sizeof(OPENFILENAME);
+		windowFrame.hwndOwner = nullptr;
+		windowFrame.lpstrFile = selectFileName;
+		windowFrame.lpstrFile[0] = '\0';
+		windowFrame.nMaxFile = sizeof(selectFileName);
+		windowFrame.lpstrFilter = (LPCSTR)"all(*.*)\0*.*\0jpg(*.jpg)\0*.jpg\0bmp(*.bmp)\0*.bmp\0png(*.png)\0*.png\0jpeg(*.jpeg)\0*.jpeg\0\0";
+		windowFrame.nFilterIndex = 1;
+		windowFrame.lpstrFileTitle = nullptr;
+		windowFrame.nMaxFileTitle = 0;
+		windowFrame.lpstrInitialDir = nullptr;
+		windowFrame.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+		//windowFrame.lpTemplateName =  MAKEINTRESOURCE(ID_TEMP_DIALOG);    
+#elif define(DEGA_PLATFORM_LINUX)
+
+#endif
 	}
 };
 

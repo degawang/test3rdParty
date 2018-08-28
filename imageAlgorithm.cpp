@@ -15,7 +15,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-
 using namespace std;
 using namespace degawong;
 
@@ -23,25 +22,36 @@ int helpWindowCorner = 1;
 bool isShowHelpWindow = true;
 float helpWindowBorder = 15.0f;
 
+bool flagBeforAfter = true;
 degawong::cDegaPara arcPara(5);
 degawong::iScreenNorm i720pNorm;
 degawong::cImageUtils imageUtils;
+degawong::cImageUtils dealedImageUtils;
 
 static void glfwErrorCallback(int error, const char* description) { std::cerr << "Glfw Error " << error << " : " << description << std::endl; }
 
 static void renderWindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) { 
+		glfwSetWindowShouldClose(window, GLFW_TRUE); 
 	}
 }
 
 static void renderWindowResizeCallback(GLFWwindow* window, int currWidth, int currHeight) {
 	/* change the display mode */
+	/* always display the same scaled image */
+	float variantWHScale = (float)currWidth / (float)currHeight;
+	float fixedWHScale = (float)imageUtils.imageInfo.width / (float)imageUtils.imageInfo.height;
+	if (fixedWHScale < variantWHScale) {
+		glViewport(0, 0, i720pNorm.width = currHeight * fixedWHScale, i720pNorm.height = currHeight);
+	} else {
+		glViewport(0, 0, i720pNorm.width = currWidth, i720pNorm.height = currWidth / fixedWHScale);
+	}	
 	glViewport(0, 0, i720pNorm.width = currWidth, i720pNorm.height = currHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0.0, currWidth, currHeight, 0.0, 0.0, 100.0);
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 int main() 
@@ -49,11 +59,12 @@ int main()
 	arcPara.vPortraitList = { "natural" ,"studio" ,"contour" ,"stage" ,"stage mono" };
 	try {		
 		GLuint tex_id;
-
 #ifdef DEGA_PLATFORM_WINDOW
 		imageUtils.loadImage("./doc/left.jpg");
+		dealedImageUtils.loadImage("./doc/temple.bmp");
 #elif defined(DEGA_PLATFORM_LINUX)
 		imageUtils.loadImage("/home/dega/Pictures/000.jpeg");
+		dealedImageUtils.loadImage("/home/dega/Pictures/000.jpeg");
 #endif
 		if (imageUtils.imageInfo.width > imageUtils.imageInfo.height) {
 			i720pNorm.width = 1280;
@@ -113,18 +124,9 @@ int main()
 			ImGui::NewFrame();
 
 			/* imgui key callback function */
-			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
-				break;
-			} else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Space))) {
-				std::cout << "press key space" << std::endl;
-				// open image with defaut software
-				ShellExecute(nullptr, _T("open"), _T("e://image//001.jpg"), _T(""), _T(""), SW_SHOW);
-			} else if(ImGui::IsKeyPressed('s') || ImGui::IsKeyPressed('S')) {
-				std::cout << "press key s(S)" << std::endl;
-				// open directory
-				
-				ShellExecute(nullptr, "open", nullptr, nullptr, "e://image//", SW_SHOWNORMAL);
-			}
+			if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) { break; } 
+			else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Space))) { flagBeforAfter = !flagBeforAfter; } 
+			else if(ImGui::IsKeyPressed('s') || ImGui::IsKeyPressed('S')) {	dealedImageUtils.save2File("./doc/res.bmp"); }
 
 			ImGuiWindowFlags window_flags = 0;
 			if (false)  window_flags |= ImGuiWindowFlags_NoTitleBar;
@@ -190,7 +192,6 @@ int main()
 				}
 				ImGui::TreePop();
 			}
-
 			ImVec2 window_pos = ImVec2((helpWindowCorner & 1) ? ImGui::GetIO().DisplaySize.x - helpWindowBorder : helpWindowBorder, (helpWindowCorner & 2) ? ImGui::GetIO().DisplaySize.y - helpWindowBorder : helpWindowBorder);
 			ImVec2 window_pos_pivot = ImVec2((helpWindowCorner & 1) ? 1.0f : 0.0f, (helpWindowCorner & 2) ? 1.0f : 0.0f);
 			if (helpWindowCorner != -1) { ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot); }
@@ -211,7 +212,6 @@ int main()
 				}
 			}
 			ImGui::End();
-
 			ImGui::Button("Time cost : ");
 			if (ImGui::IsItemHovered()) {}
 			ImGui::SameLine();
@@ -220,7 +220,7 @@ int main()
 
 			ImGui::Render();
 			glfwMakeContextCurrent(renderWindow);
-			glfwGetFramebufferSize(renderWindow, &i720pNorm.width, &i720pNorm.height);
+			//glfwGetFramebufferSize(renderWindow, &i720pNorm.width, &i720pNorm.height);
 			glViewport(0, 0, i720pNorm.width, i720pNorm.height);
 			glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -235,21 +235,41 @@ int main()
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-			GLenum inputColourFormat = GL_BGR;
-			if (1 == imageUtils.imageInfo.channel) {
-				inputColourFormat = GL_LUMINANCE;
+
+			if (true == arcPara.bMenuDownFlag[0]) {
+				arcPara.bMenuDownFlag[0] = false;
+				imageUtils.getOpenFilenName();
+				imageUtils.loadImage(imageUtils.path2Image);
 			}
-			// Create the texture
-			glTexImage2D(GL_TEXTURE_2D,     // Type of texture
-				0,                 // Pyramid level (for mip-mapping) - 0 is the top level
-				GL_RGB,            // Internal colour format to convert to
-				imageUtils.imageInfo.width,          // Image width  i.e. 640 for Kinect in standard mode
-				imageUtils.imageInfo.height,          // Image height i.e. 480 for Kinect in standard mode
-				0,                 // Border width in pixels (can either be 1 or 0)
-				inputColourFormat, // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
-				GL_UNSIGNED_BYTE,  // Image data type
-				imageUtils.data);        // The actual image data itself
-			    glGenerateMipmap(GL_TEXTURE_2D);
+			if (true == arcPara.bMenuDownFlag[1]) {
+				arcPara.bMenuDownFlag[1] = false;
+				dealedImageUtils.getSaveFilenName();
+				dealedImageUtils.save2File(dealedImageUtils.path2Image);
+			}
+			if (flagBeforAfter) {
+				glTexImage2D(GL_TEXTURE_2D,     // Type of texture
+					0,                 // Pyramid level (for mip-mapping) - 0 is the top level
+					GL_RGB,            // Internal colour format to convert to
+					imageUtils.imageInfo.width,          // Image width  i.e. 640 for Kinect in standard mode
+					imageUtils.imageInfo.height,          // Image height i.e. 480 for Kinect in standard mode
+					0,                 // Border width in pixels (can either be 1 or 0)
+					imageUtils.checkImageFormat(), // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
+					GL_UNSIGNED_BYTE,  // Image data type
+					imageUtils.data);        // The actual image data itself
+				glGenerateMipmap(GL_TEXTURE_2D);
+			}
+			else {
+				glTexImage2D(GL_TEXTURE_2D,     // Type of texture
+					0,                 // Pyramid level (for mip-mapping) - 0 is the top level
+					GL_RGB,            // Internal colour format to convert to
+					dealedImageUtils.imageInfo.width,          // Image width  i.e. 640 for Kinect in standard mode
+					dealedImageUtils.imageInfo.height,          // Image height i.e. 480 for Kinect in standard mode
+					0,                 // Border width in pixels (can either be 1 or 0)
+					dealedImageUtils.checkImageFormat(), // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
+					GL_UNSIGNED_BYTE,  // Image data type
+					dealedImageUtils.data);        // The actual image data itself
+				glGenerateMipmap(GL_TEXTURE_2D);
+			}
 			
 			/* Draw a quad */
 			glBegin(GL_QUADS);
