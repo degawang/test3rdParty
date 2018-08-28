@@ -1,29 +1,11 @@
 ﻿
-#include <vec.h>
-#include <mat.h>
 #include <string>
-#include <matrix.h>
-#include <cDegaGui.h>
-#include <cvtFormat.h>
 #include <cDegaTime.h>
 #include <cDegaUtils.h>
-#include <cImageFilter.h>
 #include <degaPredefine.h>
-#include <cRecursiveFind.h>
-
-#include <armadillo>
-#include <Eigen/Dense>
 
 #include "iostream"
 #include "tchar.h"
-#ifdef DEGA_3RD_PARTY
-#ifdef DEGA_3RD_PARTY_DLIB
-#include <dlib/image_io.h>
-#include <dlib/gui_widgets.h>
-#include <dlib/image_processing/frontal_face_detector.h>
-using namespace dlib;
-#endif // DEGA_3RD_PARTY_DLIB
-#endif // DEGA_3RD_PARTY
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -31,15 +13,9 @@ using namespace dlib;
 
 #define GLEW_STATIC
 #include <GL/glew.h>
-
-//#include <glad/glad.h>
-//#include <GL/gl3w.h>
-//#include <GL/glut.h>
 #include <GLFW/glfw3.h>
 
-#include <opencv2/opencv.hpp>
 
-using namespace cv;
 using namespace std;
 using namespace degawong;
 
@@ -49,10 +25,9 @@ float helpWindowBorder = 15.0f;
 
 degawong::cDegaPara arcPara(5);
 degawong::iScreenNorm i720pNorm;
+degawong::cImageUtils imageUtils;
 
-static void glfwErrorCallback(int error, const char* description) {
-	std::cerr << "Glfw Error " << error << " : " << description << std::endl;
-}
+static void glfwErrorCallback(int error, const char* description) { std::cerr << "Glfw Error " << error << " : " << description << std::endl; }
 
 static void renderWindowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -67,21 +42,6 @@ static void renderWindowResizeCallback(GLFWwindow* window, int currWidth, int cu
 	glLoadIdentity();
 	glOrtho(0.0, currWidth, currHeight, 0.0, 0.0, 100.0);
 	glMatrixMode(GL_MODELVIEW);
-
-	//GLfloat h = (GLfloat)currHeight / (GLfloat)currWidth;
-	//GLfloat xmax, znear, zfar;
-
-	//znear = 5.0f;
-	//zfar = 30.0f;
-	//xmax = znear * 0.5f;
-
-	//glViewport(0, 0, (GLint)currWidth, (GLint)currHeight);
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//glFrustum(-xmax, xmax, -xmax * h, xmax*h, znear, zfar);
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-	//glTranslatef(0.0, 0.0, -20.f);
 }
 
 int main() 
@@ -91,11 +51,11 @@ int main()
 		GLuint tex_id;
 
 #ifdef DEGA_PLATFORM_WINDOW
-		cv::Mat image = cv::imread("e://image//temple.bmp");
+		imageUtils.loadImage("./doc/left.jpg");
 #elif defined(DEGA_PLATFORM_LINUX)
-        cv::Mat image = cv::imread("/home/dega/Pictures/000.jpeg");
+		imageUtils.loadImage("/home/dega/Pictures/000.jpeg");
 #endif
-		if (image.cols > image.rows) {
+		if (imageUtils.imageInfo.width > imageUtils.imageInfo.height) {
 			i720pNorm.width = 1280;
 			i720pNorm.height = 720;
 		}
@@ -276,19 +236,19 @@ int main()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			GLenum inputColourFormat = GL_BGR;
-			if (1 == image.channels()) {
+			if (1 == imageUtils.imageInfo.channel) {
 				inputColourFormat = GL_LUMINANCE;
 			}
 			// Create the texture
 			glTexImage2D(GL_TEXTURE_2D,     // Type of texture
 				0,                 // Pyramid level (for mip-mapping) - 0 is the top level
 				GL_RGB,            // Internal colour format to convert to
-				image.cols,          // Image width  i.e. 640 for Kinect in standard mode
-				image.rows,          // Image height i.e. 480 for Kinect in standard mode
+				imageUtils.imageInfo.width,          // Image width  i.e. 640 for Kinect in standard mode
+				imageUtils.imageInfo.height,          // Image height i.e. 480 for Kinect in standard mode
 				0,                 // Border width in pixels (can either be 1 or 0)
 				inputColourFormat, // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
 				GL_UNSIGNED_BYTE,  // Image data type
-				image.data);        // The actual image data itself
+				imageUtils.data);        // The actual image data itself
 			    glGenerateMipmap(GL_TEXTURE_2D);
 			
 			/* Draw a quad */
@@ -313,13 +273,11 @@ int main()
 		ImGui::DestroyContext();
 
 		glfwDestroyWindow(renderWindow);
-		glfwTerminate();
-		
-		waitKey(0);
-		return 0;
+		glfwTerminate();				
 	} catch (const cDegaException& exce) {
 		std::cerr << exce.what() << std::endl;
 		std::cerr << "main project exception !" << std::endl;
 		throw;
 	}
+	return 0;
 }

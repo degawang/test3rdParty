@@ -16,3 +16,6 @@
 [submodule "3rdparty/glm"]
 	path = 3rdparty/glm
 	url = https://gitlab.com/degawong/glm
+[submodule "3rdparty/soil"]
+	path = 3rdparty/soil
+	url = https://gitlab.com/degawong/soil
