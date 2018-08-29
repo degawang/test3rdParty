@@ -3,20 +3,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#define GLEW_STATIC
-#include <GL/glew.h>
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image_aug.h>
 #include <degaFormat.h>
 #include <degaPredefine.h>
 #include <cDegaException.h>
-
-#ifdef DEGA_PLATFORM_WINDOW
-#include <windows.h>  
-#include <commdlg.h>
-#elif define(DEGA_PLATFORM_LINUX)
-
-#endif
 
 namespace degawong {
 
@@ -29,7 +18,7 @@ public:
 	int width;
 	int height;
 public:
-	void clear() { width = 0; height = 0; }
+	DEGA_FORCE_INLINE void clear() { width = 0; height = 0; }
 };
 
 class cImageInfo {
@@ -37,7 +26,7 @@ public:
 	cImageInfo() { clear(); };
 	virtual ~cImageInfo() {};
 public:
-	void clear() {
+	DEGA_FORCE_INLINE void clear() {
 		width = 0;
 		height = 0;
 		channel = 0;
@@ -46,95 +35,6 @@ public:
 	int width;
 	int height;
 	int channel;
-};
-
-class cImageUtils {
-public:
-	cImageUtils() { data = nullptr; }
-	cImageUtils(std::string _path2Image) : path2Image(_path2Image) {
-		data = nullptr;
-		stbLoadImage();
-	}
-	virtual ~cImageUtils() { stbi_image_free(data); };
-public:
-	void loadImage(std::string _path2Image) {
-		stbi_image_free(data);
-		path2Image = _path2Image;
-		stbLoadImage();
-	}
-	void save2File(std::string _path2Image) {
-		stbi_write_bmp(_path2Image.c_str(), imageInfo.width, imageInfo.height, imageInfo.channel, data);
-	}
-	GLenum checkImageFormat() {
-		switch (imageInfo.channel) {
-		case 1: { return (inputColorFormat = GL_LUMINANCE); }
-		case 3: { return (inputColorFormat = GL_RGB); }
-		case 4: { return (inputColorFormat = GL_RGBA); }
-		default: { return (inputColorFormat = GL_RGB); }
-		}
-	}
-public:
-	void getOpenFilenName() {
-		initWindowFrame();
-#ifdef DEGA_PLATFORM_WINDOW
-		if (GetOpenFileName(&windowFrame)) { path2Image = windowFrame.lpstrFile; }		
-#elif define(DEGA_PLATFORM_LINUX)
-
-#endif
-		//OutputDebugString(selectFileName);
-		//OutputDebugString((LPCSTR)"\r\n");
-		//std::cout << selectFileName << std::endl;
-	}
-	void getSaveFilenName() {
-		initWindowFrame();
-#ifdef DEGA_PLATFORM_WINDOW
-		if (GetSaveFileName(&windowFrame)) { path2Image = windowFrame.lpstrFile; }
-#elif define(DEGA_PLATFORM_LINUX)
-
-#endif
-	}
-public:
-	unsigned char* data;
-	cImageInfo imageInfo;	
-	std::string path2Image;	
-	GLenum inputColorFormat;
-	TCHAR selectFileName[MAX_PATH];
-public:
-#ifdef DEGA_PLATFORM_WINDOW
-	OPENFILENAME windowFrame;
-#elif define(DEGA_PLATFORM_LINUX)
-
-#endif
-private:
-	void stbLoadImage() {
-		try {
-			data = stbi_load(path2Image.c_str(), &imageInfo.width, &imageInfo.height, &imageInfo.channel, 0);
-			if (nullptr == data) { throw cDegaException("unable to read image."); }
-		} catch (const cDegaException& exce) {
-			std::cerr << exce.what() << std::endl;
-			throw;
-		}
-	}
-private:
-	void initWindowFrame() {
-#ifdef DEGA_PLATFORM_WINDOW
-		ZeroMemory(&windowFrame, sizeof(OPENFILENAME));
-		windowFrame.lStructSize = sizeof(OPENFILENAME);
-		windowFrame.hwndOwner = nullptr;
-		windowFrame.lpstrFile = selectFileName;
-		windowFrame.lpstrFile[0] = '\0';
-		windowFrame.nMaxFile = sizeof(selectFileName);
-		windowFrame.lpstrFilter = (LPCSTR)"all(*.*)\0*.*\0jpg(*.jpg)\0*.jpg\0bmp(*.bmp)\0*.bmp\0png(*.png)\0*.png\0jpeg(*.jpeg)\0*.jpeg\0\0";
-		windowFrame.nFilterIndex = 1;
-		windowFrame.lpstrFileTitle = nullptr;
-		windowFrame.nMaxFileTitle = 0;
-		windowFrame.lpstrInitialDir = nullptr;
-		windowFrame.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-		//windowFrame.lpTemplateName =  MAKEINTRESOURCE(ID_TEMP_DIALOG);    
-#elif define(DEGA_PLATFORM_LINUX)
-
-#endif
-	}
 };
 
 template <typename _T>
@@ -197,20 +97,43 @@ class cDegaPara {
 public:
 	cDegaPara() { bMenuDownFlag = nullptr; fStyleIntensity = nullptr; };
 	cDegaPara(int _iParaNumbers) : iParaNumbers(_iParaNumbers) {
-		iPortraitModel = 0;
-		iPortraitStyle = 0;
-		bMenuDownFlag = new bool[3] {0};
-		fStyleIntensity = new float[iParaNumbers] {0};
+		setParameter(iParaNumbers);
 	};
 	~cDegaPara() {
 		if (nullptr != bMenuDownFlag) { delete bMenuDownFlag; }
 		if (nullptr != fStyleIntensity) { delete fStyleIntensity; }
 	};
 public:
+	cDegaPara& operator=(const int value) {
+		iImageFormat = 0;
+		iParaNumbers = 0;
+		iAlgorithmModel = 0;
+		iAlgorithmStyle = 0;
+		bMenuDownFlag = nullptr;
+		fStyleIntensity = nullptr;
+		return *this;
+	}
+	void operator=(const cDegaPara _arcParameter) {		
+		iImageFormat = _arcParameter.iImageFormat;
+		iParaNumbers = _arcParameter.iParaNumbers;
+		iAlgorithmModel = _arcParameter.iAlgorithmModel;
+		iAlgorithmStyle = _arcParameter.iAlgorithmStyle;
+		for (size_t i = 0; i < 3; i++) { bMenuDownFlag[i] = _arcParameter.bMenuDownFlag[i]; }
+		for (size_t i = 0; i < _arcParameter.iParaNumbers; i++) { fStyleIntensity[i] = _arcParameter.fStyleIntensity[i]; }
+	}
+public:
+	DEGA_FORCE_INLINE void setParameter(int _iParaNumbers) {
+		iAlgorithmModel = 0;
+		iAlgorithmStyle = 0;
+		iParaNumbers = _iParaNumbers;
+		bMenuDownFlag = new bool[3]{ 0 };
+		fStyleIntensity = new float[iParaNumbers] {0};
+	}
+public:
 	int iImageFormat;
-	int iParaNumbers;
-	int iPortraitStyle;
-	int iPortraitModel;
+	int iParaNumbers;	
+	int iAlgorithmModel;
+	int iAlgorithmStyle;
 	bool *bMenuDownFlag;
 	float *fStyleIntensity;
 	std::vector<std::string> vPortraitList;

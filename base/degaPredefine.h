@@ -1,4 +1,6 @@
 #pragma once
+namespace degawong {
+
 /* function parameter */
 #define     DEGA_PARA_POSITIVE          0X01
 #define     DEGA_PARA_NEGATIVE          0X02
@@ -37,6 +39,12 @@
 #define     DEGA_2_HOMO_POINT           0X02
 #define     DEGA_3_POINT                0X03
 #define     DEGA_3_HOMO_POINT           0X04
+/* help window location */
+#define     DEGA_LOCATION_CUSTOM       -0X01
+#define     DEGA_LOCATION_TOPLEFT       0X00
+#define     DEGA_LOCATION_TOPRIGHT      0X01
+#define     DEGA_LOCATION_BUTTOMLEFT    0X02
+#define     DEGA_LOCATION_BUTTOMRIGHT   0X03
 
 #if defined(__clang__) || (__GNUC__) || (__GNUG__)
 #define     DEGA_NO_EXPORT_API          __attribute__ ((visibility ("hidden")))
@@ -51,3 +59,6 @@
 #define 	DEGA_IMPORT_API
 #define     DEGA_FORCE_INLINE
 #endif
+
+
+}

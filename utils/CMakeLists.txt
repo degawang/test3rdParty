@@ -22,7 +22,9 @@ endforeach()
 SOURCE_GROUP("Head Files" FILES ${FILE_PROJECT_NAME_HEADERS}) 
 ADD_LIBRARY(${PROJECT_NAME} ${FILE_PROJECT_NAME_SRCS} ${FILE_PROJECT_NAME_HEADERS})
 set(LIBS_PROJECT_NAME_LINK	
-    soil
+    soil	
+	imgui
+	glm_static
 	libglew_static
 	libglewmx_static)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIBS_PROJECT_NAME_LINK})
