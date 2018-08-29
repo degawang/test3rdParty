@@ -12,7 +12,7 @@
 #ifdef DEGA_PLATFORM_WINDOW
 #include <windows.h>  
 #include <commdlg.h>
-#elif define(DEGA_PLATFORM_LINUX)
+#elif defined(DEGA_PLATFORM_LINUX)
 
 #endif
 
@@ -59,7 +59,7 @@ public:
 		initWindowFrame();
 #ifdef DEGA_PLATFORM_WINDOW
 		if (GetOpenFileName(&windowFrame)) { path2Image = windowFrame.lpstrFile; }		
-#elif define(DEGA_PLATFORM_LINUX)
+#elif defined(DEGA_PLATFORM_LINUX)
 
 #endif
 	}
@@ -67,7 +67,7 @@ public:
 		initWindowFrame();
 #ifdef DEGA_PLATFORM_WINDOW
 		if (GetSaveFileName(&windowFrame)) { path2Image = windowFrame.lpstrFile; }
-#elif define(DEGA_PLATFORM_LINUX)
+#elif defined(DEGA_PLATFORM_LINUX)
 
 #endif
 	}
@@ -76,11 +76,11 @@ public:
 	cImageInfo imageInfo;	
 	std::string path2Image;	
 	GLenum inputColorFormat;
-	TCHAR selectFileName[MAX_PATH];
+	char selectFileName[DEGA_MAX_PATH_LENGTH];
 public:
 #ifdef DEGA_PLATFORM_WINDOW
 	OPENFILENAME windowFrame;
-#elif define(DEGA_PLATFORM_LINUX)
+#elif defined(DEGA_PLATFORM_LINUX)
 
 #endif
 private:
@@ -109,7 +109,7 @@ private:
 		windowFrame.lpstrInitialDir = nullptr;
 		windowFrame.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 		//windowFrame.lpTemplateName =  MAKEINTRESOURCE(ID_TEMP_DIALOG);    
-#elif define(DEGA_PLATFORM_LINUX)
+#elif defined(DEGA_PLATFORM_LINUX)
 
 #endif
 	}
