@@ -34,6 +34,8 @@ namespace degawong {
 #endif
 /* cpp base */
 #define		DEGA_ALLIGN_NUM		        16
+/* cpp base */
+#define		DEGA_MAX_PATH_LENGTH		256
 /* point flag */
 #define     DEGA_2_POINT                0X01
 #define     DEGA_2_HOMO_POINT           0X02
