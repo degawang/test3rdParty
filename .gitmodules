@@ -1,21 +1,21 @@
 [submodule "3rdparty/glew"]
-	path = 3rdparty/glew
+	path = 3rdParty/glew
 	url = https://gitlab.com/degawong/glew
 [submodule "3rdparty/glfw"]
-	path = 3rdparty/glfw
+	path = 3rdParty/glfw
 	url = https://gitlab.com/degawong/glfw
 [submodule "3rdparty/imgui"]
-	path = 3rdparty/imgui
+	path = 3rdParty/imgui
 	url = https://gitlab.com/degawong/imgui
 [submodule "3rdparty/Eigen"]
-	path = 3rdparty/Eigen
+	path = 3rdParty/Eigen
 	url = https://gitlab.com/degawong/eigen
 [submodule "3rdparty/armadillo"]
-	path = 3rdparty/armadillo
+	path = 3rdParty/armadillo
 	url = https://gitlab.com/degawong/armadillo
 [submodule "3rdparty/glm"]
-	path = 3rdparty/glm
+	path = 3rdParty/glm
 	url = https://gitlab.com/degawong/glm
 [submodule "3rdparty/soil"]
-	path = 3rdparty/soil
+	path = 3rdParty/soil
 	url = https://gitlab.com/degawong/soil
