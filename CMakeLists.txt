@@ -122,8 +122,6 @@ endforeach()
 
 SOURCE_GROUP("Head Files" FILES ${FILE_ROOT_HEADERS}) 
 
-OPTION(USE_SHARED_GLEW "use shared glew lib" OFF)
-
 set(LIBS_DIR_ROOT	
 	soil
 	Eigen
