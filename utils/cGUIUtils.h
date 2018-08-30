@@ -18,6 +18,7 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
+//#include <glad/glad.h>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -28,6 +29,44 @@
 namespace degawong {
 
 static ImVec4 clearWindowColor = ImVec4(0.25f, 0.85f, 0.60f, 1.00f);
+
+class cImageInfo {
+public:
+	cImageInfo() { clear(); };
+	cImageInfo(std::string _path2Image) { 
+		clear();
+		loadImage(_path2Image);
+	};
+	virtual ~cImageInfo() { if (nullptr != data) { stbi_image_free(data); } }
+public:
+	DEGA_FORCE_INLINE GLvoid clear() {
+		width = 0;
+		height = 0;
+		channel = 0;
+		data = nullptr;
+	}
+	DEGA_FORCE_INLINE GLvoid loadImage(std::string _path2Image) {
+		try {
+			stbi_image_free(data);
+			data = stbi_load(_path2Image.c_str(), &width, &height, &channel, 0);
+			if (nullptr == data) { throw cDegaException("unable to read image."); }
+		} catch (const cDegaException& exce) { std::cerr << exce.what() << std::endl; throw; }
+	}
+public:
+	DEGA_FORCE_INLINE GLenum checkImageFormat() {
+		switch (channel) {
+		case 1: { return GL_LUMINANCE; }
+		case 3: { return GL_RGB; }
+		case 4: { return GL_RGBA; }
+		default: { return GL_RGB; }
+		}
+	}
+public:
+	int width;
+	int height;
+	int channel;
+	unsigned char* data;
+};
 
 class cImageUtils {
 public:

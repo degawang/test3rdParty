@@ -1,5 +1,4 @@
 ﻿
-
 #include <string>
 #include <iostream>
 #include <cDegaTime.h>

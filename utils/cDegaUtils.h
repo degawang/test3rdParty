@@ -21,22 +21,6 @@ public:
 	DEGA_FORCE_INLINE void clear() { width = 0; height = 0; }
 };
 
-class cImageInfo {
-public:
-	cImageInfo() { clear(); };
-	virtual ~cImageInfo() {};
-public:
-	DEGA_FORCE_INLINE void clear() {
-		width = 0;
-		height = 0;
-		channel = 0;
-	}
-public:
-	int width;
-	int height;
-	int channel;
-};
-
 template <typename _T>
 class cDegaPoint {
 public:
