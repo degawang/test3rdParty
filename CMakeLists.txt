@@ -104,14 +104,20 @@ IF(DEGA_3RD_PARTY)
 	ENDIF(DEGA_3RD_PARTY_DLIB)
 ENDIF(DEGA_3RD_PARTY)
 
+set(DIR_ROOT_LINK
+	input/library/android
+	input/library/windows)
+LINK_DIRECTORIES(${DIR_ROOT_LINK})
+
 set(DIR_ROOT_INCLUDE
 	base
-	time)
-
+	input/include)
 INCLUDE_DIRECTORIES(${DIR_ROOT_INCLUDE})
 
 set(DIRE_ROOT_HEAD
-	time)
+	base
+	utils
+	input/include)
 
 foreach(SUB_DIR
     ${DIRE_ROOT_HEAD}
@@ -125,6 +131,7 @@ endforeach()
 SOURCE_GROUP("Head Files" FILES ${FILE_ROOT_HEADERS}) 
 
 set(LIBS_DIR_ROOT	
+	cv
 	glad
 	soil
 	Eigen
