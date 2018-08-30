@@ -28,6 +28,9 @@
 *.swo
 *.swp
 
+# Other files
+*.ini
+
 # Build 
 build*/
 
