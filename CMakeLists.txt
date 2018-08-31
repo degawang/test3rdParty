@@ -72,7 +72,8 @@ AUX_SOURCE_DIRECTORY(. FILE_ROOT_SRCS)
 
 # enable the pack function
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON) 
-SET_PROPERTY(TARGET utils PROPERTY FOLDER "Utils")
+SET_PROPERTY(TARGET degaUtils PROPERTY FOLDER "Utils")
+SET_PROPERTY(TARGET demoUtils PROPERTY FOLDER "Utils")
 # SET_PROPERTY(TARGET laplaceBlend PROPERTY FOLDER "Algorithm")
 
 SET_PROPERTY(TARGET glad PROPERTY FOLDER "OpenGL")
@@ -116,7 +117,6 @@ INCLUDE_DIRECTORIES(${DIR_ROOT_INCLUDE})
 
 set(DIRE_ROOT_HEAD
 	base
-	utils
 	input/include)
 
 foreach(SUB_DIR
@@ -136,8 +136,9 @@ set(LIBS_DIR_ROOT
 	soil
 	Eigen
 	imgui
-	utils
 	armadillo
+	degaUtils
+	demoUtils
 	glm_static
 	libglew_static
 	libglewmx_static)

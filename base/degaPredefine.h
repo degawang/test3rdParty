@@ -1,29 +1,34 @@
 #pragma once
 namespace degawong {
 
+/* data type */
+typedef unsigned uint;
+typedef signed char schar;
+typedef unsigned char uchar;
+typedef unsigned short ushort;
 /* function parameter */
-#define     DEGA_PARA_POSITIVE          0X01
-#define     DEGA_PARA_NEGATIVE          0X02
+#define     DEGA_PARA_POSITIVE          0x01
+#define     DEGA_PARA_NEGATIVE          0x02
 /* image merge */
-#define     DEGA_MERGE_HARDMIX          0X01
-#define     DEGA_MERGE_OVERLAY          0X02
-#define     DEGA_MERGE_PINLIGHT         0X03
-#define     DEGA_MERGE_HARDLIGHT        0X04
-#define     DEGA_MERGE_SOFTLIGHT        0X05
-#define     DEGA_MERGE_LINERLIGHT       0X06
-#define     DEGA_MERGE_VIVLDLIGHT       0X07
+#define     DEGA_MERGE_HARDMIX          0x01
+#define     DEGA_MERGE_OVERLAY          0x02
+#define     DEGA_MERGE_PINLIGHT         0x03
+#define     DEGA_MERGE_HARDLIGHT        0x04
+#define     DEGA_MERGE_SOFTLIGHT        0x05
+#define     DEGA_MERGE_LINERLIGHT       0x06
+#define     DEGA_MERGE_VIVLDLIGHT       0x07
 /* image filter */
-#define     DEGA_FILTER_EDGE            0X01
-#define     DEGA_FILTER_SHARP           0X02
-#define     DEGA_FILTER_EMBOSS          0X03
-#define     DEGA_FILTER_SKETCH          0X04
-#define     DEGA_FILTER_SPHERIZE        0X05
-#define     DEGA_FILTER_LIGHT           0X06
-#define     DEGA_FILTER_WOODEN          0X07
-#define     DEGA_FILTER_COMIC           0X08
-#define     DEGA_FILTER_OILPAINT        0X09
+#define     DEGA_FILTER_EDGE            0x01
+#define     DEGA_FILTER_SHARP           0x02
+#define     DEGA_FILTER_EMBOSS          0x03
+#define     DEGA_FILTER_SKETCH          0x04
+#define     DEGA_FILTER_SPHERIZE        0x05
+#define     DEGA_FILTER_LIGHT           0x06
+#define     DEGA_FILTER_WOODEN          0x07
+#define     DEGA_FILTER_COMIC           0x08
+#define     DEGA_FILTER_OILPAINT        0x09
 /* image process */
-#define     DEGA_PROCESS_RESIZE         0X01
+#define     DEGA_PROCESS_RESIZE         0x01
 /* calculate base */
 #define		DEGA_CONSTANT_PI	        3.14159265358979f
 /* platform base */
@@ -37,16 +42,16 @@ namespace degawong {
 /* cpp base */
 #define		DEGA_MAX_PATH_LENGTH		256
 /* point flag */
-#define     DEGA_2_POINT                0X01
-#define     DEGA_2_HOMO_POINT           0X02
-#define     DEGA_3_POINT                0X03
-#define     DEGA_3_HOMO_POINT           0X04
+#define     DEGA_2_POINT                0x01
+#define     DEGA_2_HOMO_POINT           0x02
+#define     DEGA_3_POINT                0x03
+#define     DEGA_3_HOMO_POINT           0x04
 /* help window location */
-#define     DEGA_LOCATION_CUSTOM       -0X01
-#define     DEGA_LOCATION_TOPLEFT       0X00
-#define     DEGA_LOCATION_TOPRIGHT      0X01
-#define     DEGA_LOCATION_BUTTOMLEFT    0X02
-#define     DEGA_LOCATION_BUTTOMRIGHT   0X03
+#define     DEGA_LOCATION_CUSTOM       -0x01
+#define     DEGA_LOCATION_TOPLEFT       0x00
+#define     DEGA_LOCATION_TOPRIGHT      0x01
+#define     DEGA_LOCATION_BUTTOMLEFT    0x02
+#define     DEGA_LOCATION_BUTTOMRIGHT   0x03
 
 #if defined(__clang__) || (__GNUC__) || (__GNUG__)
 #define     DEGA_NO_EXPORT_API          __attribute__ ((visibility ("hidden")))
