@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 
-#include <cDegaUtils.h>
+#include <cDemoUtils.h>
 #include <degaFormat.h>
 #include <degaPredefine.h>
 #include <cDegaException.h>
@@ -393,7 +393,7 @@ public:
 public:		
 	ImGuiIO ioHandle;	
 	GLuint imageTextureID;
-	cDegaPara arcParameter;
+	cDemoPara arcParameter;
 	iScreenNorm iRendingSize;	
 	cImageUtils imageUtilsAfter;
 	cImageUtils imageUtilsBefor;

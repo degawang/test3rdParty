@@ -4,13 +4,12 @@
 #include <vector>
 #include <iostream>
 #include <cGUIUtils.h>
-#include <cDegaUtils.h>
+#include <cDemoUtils.h>
 #include <degaFormat.h>
 #include <degaPredefine.h>
 #include <cDegaException.h>
 
 namespace degawong {
-
 
 class cInterfaceUtils {
 public:
@@ -28,7 +27,7 @@ public:
 	};
 public:	
 	void doAlgorithm();
-	void setParameter(const cDegaPara& _arcParameter) {
+	void setParameter(const cDemoPara& _arcParameter) {
 		iImageFormat = _arcParameter.iImageFormat;
 		iAlgorithmModel = _arcParameter.iAlgorithmModel;
 		iAlgorithmStyle = _arcParameter.iAlgorithmStyle;

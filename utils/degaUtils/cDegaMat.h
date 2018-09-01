@@ -16,8 +16,7 @@ public:
     cDegaMat(cDegaMat&& _mat);
     cDegaMat(const cDegaMat& _mat);
     cDegaMat(const cDegaSize& _size, const int _matType);
-    cDegaMat(const int _height, const int _width, const int _matType);
-	cDegaMat(const int _height, const int _width, const int _matType, void *_data);
+	cDegaMat(const int _height, const int _width, const int _matType = DEGA_8UC3, void *_data = nullptr);
 public:
 
 private:

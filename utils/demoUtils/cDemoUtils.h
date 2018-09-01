@@ -9,11 +9,11 @@
 
 namespace degawong {
 
-class cDegaSize {
+class cDemoSize {
 public:
-	cDegaSize() : width(0), height(0) {}
-	cDegaSize(int _height, int _width) : width(_width), height(_height) {}
-	virtual ~cDegaSize() {}
+	cDemoSize() : width(0), height(0) {}
+	cDemoSize(int _height, int _width) : width(_width), height(_height) {}
+	virtual ~cDemoSize() {}
 public:
 	int width;
 	int height;
@@ -22,17 +22,17 @@ public:
 };
 
 template <typename _T>
-class cDegaPoint {
+class cDemoPoint {
 public:
-	cDegaPoint() { clear(); }
-	cDegaPoint(const cDegaPoint<_T> &_point) { 
+	cDemoPoint() { clear(); }
+	cDemoPoint(const cDemoPoint<_T> &_point) {
 		x = _point.x;
 		y = _point.y;
 		z = _point.z;
 		w = _point.w;
 	}
-	cDegaPoint(_T _x, _T _y, int _pointFlag) : x(_x), y(_y), z(0), w(0), pointFlag(_pointFlag) {}
-	cDegaPoint(_T _x, _T _y, _T _X, int _pointFlag) : pointFlag(_pointFlag) {
+	cDemoPoint(_T _x, _T _y, int _pointFlag) : x(_x), y(_y), z(0), w(0), pointFlag(_pointFlag) {}
+	cDemoPoint(_T _x, _T _y, _T _X, int _pointFlag) : pointFlag(_pointFlag) {
 		switch (pointFlag) {
 		case DEGA_3_POINT:
 		{
@@ -54,8 +54,8 @@ public:
 			break;
 		}
 	}	
-	cDegaPoint(_T _x, _T _y, _T _z, _T _w, int _pointFlag) : x(_x), y(_y), z(_z), w(_w), pointFlag(_pointFlag) {}
-	virtual ~cDegaPoint() {}
+	cDemoPoint(_T _x, _T _y, _T _z, _T _w, int _pointFlag) : x(_x), y(_y), z(_z), w(_w), pointFlag(_pointFlag) {}
+	virtual ~cDemoPoint() {}
 public:
 	_T x;
 	_T y;
@@ -77,18 +77,18 @@ public:
 	int height;
 };
 
-class cDegaPara {
+class cDemoPara {
 public:
-	cDegaPara() { bMenuDownFlag = nullptr; fStyleIntensity = nullptr; };
-	cDegaPara(int _iParaNumbers) : iParaNumbers(_iParaNumbers) {
+	cDemoPara() { bMenuDownFlag = nullptr; fStyleIntensity = nullptr; };
+	cDemoPara(int _iParaNumbers) : iParaNumbers(_iParaNumbers) {
 		setParameter(iParaNumbers);
 	};
-	~cDegaPara() {
+	~cDemoPara() {
 		if (nullptr != bMenuDownFlag) { delete bMenuDownFlag; }
 		if (nullptr != fStyleIntensity) { delete fStyleIntensity; }
 	};
 public:
-	cDegaPara& operator=(const int value) {
+	cDemoPara & operator=(const int value) {
 		iImageFormat = 0;
 		iParaNumbers = 0;
 		iAlgorithmModel = 0;
@@ -97,7 +97,7 @@ public:
 		fStyleIntensity = nullptr;
 		return *this;
 	}
-	void operator=(const cDegaPara _arcParameter) {		
+	void operator=(const cDemoPara _arcParameter) {
 		iImageFormat = _arcParameter.iImageFormat;
 		iParaNumbers = _arcParameter.iParaNumbers;
 		iAlgorithmModel = _arcParameter.iAlgorithmModel;
