@@ -42,10 +42,10 @@ typedef unsigned short ushort;
 /* cpp base */
 #define		DEGA_MAX_PATH_LENGTH		256
 /* point flag */
-#define     DEGA_2_POINT                0x01
-#define     DEGA_2_HOMO_POINT           0x02
-#define     DEGA_3_POINT                0x03
-#define     DEGA_3_HOMO_POINT           0x04
+#define     DEGA_POINT_2_USUA           0x01
+#define     DEGA_POINT_2_HOMO           0x02
+#define     DEGA_POINT_3_USUA           0x03
+#define     DEGA_POINT_3_HOMO           0x04
 /* help window location */
 #define     DEGA_LOCATION_CUSTOM       -0x01
 #define     DEGA_LOCATION_TOPLEFT       0x00

@@ -1,5 +1,3 @@
-#include "cDegaImage.h"
-
 
 #include <cDegaImage.h>
 #include <degaPredefine.h>
