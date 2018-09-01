@@ -8,10 +8,9 @@
 
 namespace degawong {
 
-
 class cDegaSize {
 public:
-	cDegaSize() : width(0), height(0) {}
+	cDegaSize() { clear(); }
 	cDegaSize(int _height, int _width) : width(_width), height(_height) {}
 	virtual ~cDegaSize() {}
 public:

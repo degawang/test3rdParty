@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <degaType.h>
 #include <cDegaUtils.h>
 #include <degaPredefine.h>
 
@@ -12,24 +13,76 @@ class cDegaMat {
 public:
 	cDegaMat();
 	~cDegaMat();
+public:    
+    cDegaMat(cDegaMat & _mat);
+	cDegaMat(cDegaMat && _mat);
+    cDegaMat(const cDegaSize & _size, const int _matType);
+	cDegaMat(const int _height, const int _width, const int _matType);
+	cDegaMat(const int _height, const int _width, const int _matType, const int _dataFrom, void *_data = nullptr);
 public:
-    cDegaMat(cDegaMat&& _mat);
-    cDegaMat(const cDegaMat& _mat);
-    cDegaMat(const cDegaSize& _size, const int _matType);
-	cDegaMat(const int _height, const int _width, const int _matType = DEGA_8UC3, void *_data = nullptr);
+	uchar * ptr() { return data; }
+	const uchar* ptr() const { return data; }
+	uchar * ptr(int _height) { return data + _height * stride; }
+	const uchar* ptr(int _height) const { return data + _height * stride; }
+	uchar* ptr(int _height, int _width) { return data + _height * stride + _width * getElemSize(); }
+	const uchar* ptr(int _height, int _width) const { return data + _height * stride + _width * getElemSize(); }
 public:
-
+	template<typename _T> _T* ptr() { return (_T*)data; }
+	template<typename _T> const _T* ptr() const { return (const _T*)data; }
+	template<typename _T> _T* ptr(int _height, int _width) { return (_T*)ptr(_height, _width); }
+	template<typename _T> const _T* ptr(int _height, int _width) const { return (const _T*)ptr(_height, _width); }
+public:
+	void clearAll();
+	void setFromCstruct();
+	void setMatData(cDegaMat & _mat);
+	void setMatPoint(cDegaMat & _mat);
+	void copyMatPoint(cDegaMat & _mat);
+public:
+	int getWidth() const { return width; }
+	int getHeight() const { return height; }
+	int getStride() const { return stride; }
+	int getMatType() const { return matType; }
+	int getDepth() const { return DEGA_SPLIT_DEPTH(matType); }
+	int getChannel() const { return DEGA_SPLIT_CHANEL(matType); }
+	int getElemSize() const { return DEGA_GET_ELEMSIZE(matType); }
+public:
+	bool ifSubRegion() { return isSubRegion; }
+private:
+	void freeAllocate();
+	void freeDelocate();
+	void limitAllocate();
+	void limitDelocate();
+	void customDelocate();
+private:
+	void clsNewDelocate();
+	void mallocDelocate();
+	void stbLoadDelocate();
+private:
+	void checkMatType();
+	bool checkMemoFrom();
+	bool needToDelocate();
+	void checkForDelocate();
 private:
 	void createFromEmpty();
+	void createFromData(void *_data);
+private:
+	void operateAllocate();
+	void operateDelocate();
 private:
 	int width;
 	int height;
 	int stride;
-	int channel;
-    int elemSize;
+	int channel; 
+	int matType;
+	int dataFrom;
+	int elemSize;
+	int dataDepth;
 private:
-	uchar *data;
-	int *refCount;
+	bool isSubRegion;
+	bool isContinuous;
+private:	
+	int *refCount;	
+	unsigned char *data;
 };
 
 
