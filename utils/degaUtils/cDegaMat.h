@@ -17,8 +17,34 @@ public:
     cDegaMat(cDegaMat & _mat);
 	cDegaMat(cDegaMat && _mat);
     cDegaMat(const cDegaSize & _size, const int _matType);
-	cDegaMat(const int _height, const int _width, const int _matType);
+	cDegaMat(std::tuple<int, int, int, int, void *>&& _matParaTuple);
+	cDegaMat(const int _height, const int _width, const int _matType);	
 	cDegaMat(const int _height, const int _width, const int _matType, const int _dataFrom, void *_data = nullptr);
+public:
+	//cDegaMat& operator ++ ();
+	//cDegaMat& operator -- ();
+	//cDegaMat operator ++ (int);
+	//cDegaMat operator -- (int);
+	//cDegaMat& operator = (const _T& _value);
+	//cDegaMat operator + (const _T& _value);
+	//cDegaMat operator - (const _T& _value);
+	//cDegaMat operator * (const _T& _value);
+	//cDegaMat operator / (const _T& _value);
+	//cDegaMat& operator = (mat<_T>& _mat);
+	//cDegaMat& operator = (mat<_T>&& _mat);
+	//cDegaMat operator + (const mat<_T>& _mat);
+	//cDegaMat operator - (const mat<_T>& _mat);
+	//cDegaMat operator * (const mat<_T>& _mat);
+	//cDegaMat operator / (const mat<_T>& _mat);
+	//cDegaMat& operator += (const _T& _value);
+	//cDegaMat& operator -= (const _T& _value);
+	//cDegaMat& operator *=(const _T& _value);
+	//cDegaMat& operator /=(const _T& _value);
+	//cDegaMat& operator += (const cDegaMat& _mat);
+	//cDegaMat& operator -= (const cDegaMat& _mat);
+	//cDegaMat& operator *=(const cDegaMat& _mat);
+	//cDegaMat& operator /=(const cDegaMat& _mat);
+	//_T& operator()(const int& _width, const int& _height);
 public:
 	uchar * ptr() { return data; }
 	const uchar* ptr() const { return data; }
@@ -47,6 +73,7 @@ public:
 	int getElemSize() const { return DEGA_GET_ELEMSIZE(matType); }
 public:
 	bool ifSubRegion() { return isSubRegion; }
+	bool ifContinuous() { return isContinuous; }
 private:
 	void freeAllocate();
 	void freeDelocate();

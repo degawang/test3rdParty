@@ -1,3 +1,5 @@
+
+#include <tuple>
 #include <malloc.h>
 #include <cDegaMat.h>
 #include <degaType.h>
@@ -7,7 +9,7 @@
 namespace degawong {
 
 cDegaMat::cDegaMat() { clearAll(); }
-cDegaMat::~cDegaMat() {}
+cDegaMat::~cDegaMat() { checkForDelocate(); }
 cDegaMat::cDegaMat(cDegaMat & _mat) {
 	setMatData(_mat);
 	setFromCstruct();
@@ -20,6 +22,13 @@ cDegaMat::cDegaMat(cDegaMat && _mat) {
 	_mat.clearAll();
 }
 cDegaMat::cDegaMat(const cDegaSize & _size, const int _matType) : cDegaMat(_size.height, _size.width, _matType) {}
+cDegaMat::cDegaMat(std::tuple<int, int, int, int, void *> && _matParaTuple) :
+	/* std::make_tuple<int height, int width, int matType, int dataFrom, uchar *data>() */
+	cDegaMat(std::get<0>(_matParaTuple), 
+	std::get<1>(_matParaTuple), 
+	DEGA_TYPE_8UC(std::get<2>(_matParaTuple)), 
+	std::get<3>(_matParaTuple), 
+	std::get<4>(_matParaTuple)) {}
 cDegaMat::cDegaMat(const int _height, const int _width, const int _matType) : dataFrom(DEGA_FROM_CSTRUCT) {
 	width = _width;
 	height = _height;
@@ -107,7 +116,7 @@ void cDegaMat::checkMatType() {
 
 bool cDegaMat::checkMemoFrom() { return (DEGA_FROM_CSTRUCT == dataFrom); }
 
-bool cDegaMat::needToDelocate() {}
+bool cDegaMat::needToDelocate() { if (isSubRegion) { return false; }; return ((--(*refCount)) > 1); }
 
 void cDegaMat::checkForDelocate() { if (needToDelocate()) {operateDelocate();} }
 
